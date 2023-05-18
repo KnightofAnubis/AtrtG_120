@@ -1,7 +1,7 @@
 let config = {
     type: Phaser.CANVAS,
-    width: 360,
-    height: 640,
+    width: 640,
+    height: 360,
     fps:{target: 30,},
     scene: [ Load, Menu , Play, GameUI, Credits, GameOver ],
     physics: {default: 'arcade',arcade: {debug: false}},
@@ -9,7 +9,7 @@ let config = {
 };
 
 let game = new Phaser.Game(config);
-let keyA, keyD, keyW, keyS;
+let keyA, keyD, keyC, keySpace;
 let playerBuffer = game.config.height/10;
 let playerSpeed = 100;
 let UIBorderX = game.config.width/20;

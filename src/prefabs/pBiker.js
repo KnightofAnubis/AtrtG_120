@@ -1,4 +1,4 @@
-class pBiker extends Phaser.GameObjects.Sprite {
+class jetPack extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame ) {
         super(scene, x, y, texture, frame)
         this.scene.add.existing(this);
@@ -40,20 +40,12 @@ class pBiker extends Phaser.GameObjects.Sprite {
                 this.body.setAccelerationX(this.accel);
             }else {
                 this.body.setAccelerationX(0);
-                // if(this.body.velocity.x < 0){
-                //     this.body.setAccelerationX(this.accel);
-                // }
-                // if(this.body.velocity.x > 0){
-                //     this.body.setAccelerationX(-this.accel);
-                // }
-            }
-
-            if(keyW.isDown && this.x >= this.width){
-                playerSpeed = 125;
-            }else if (keyS.isDown && this.x <= game.config.width - this.width) {
-                playerSpeed = 90;
-            }else {
-                playerSpeed = 100;
+                if(this.body.velocity.x < 0){
+                    this.body.setAccelerationX(this.accel);
+                }
+                if(this.body.velocity.x > 0){
+                    this.body.setAccelerationX(-this.accel);
+                }
             }
         }
     }

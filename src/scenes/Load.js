@@ -13,16 +13,10 @@ class Load extends Phaser.Scene {
         this.load.on('complete', () => {
             loadingBar.destroy();
         });
-
-        this.load.audio('selectSFX', './assets/audio/104550__diesel_freesound-cervelo-p2-changing-gears.wav');
-        this.load.image('road', './assets/roadTile.png');
-        this.load.image('playerBike', './assets/playerStraight.png');
-        this.load.atlas('spikeTrap', './assets/spikeTrap.png', './assets/spikeTrap.json');
+        this.load.image('heart', './assets/heart.png',);
+        this.load.image('sunset', './assets/sunset.png');
+        this.load.image('jetPackGuy', './assets/spaceman.png');
         this.load.atlas('warning', './assets/warning.png', './assets/warning.json');
-        this.load.atlas('AIBike', './assets/aiBike-sheet.png', './assets/aiBike.json');
-        this.load.audio('bikePetal', './assets/audio/mixkit-bike-pedalling-on-street-loop-1603.wav');
-        this.load.audio('tirePop', './assets/audio/samuelgremaud__puncture+johnsonbrandediting__tire-puncture-pop-hit.wav');
-        this.load.audio('cowBell', './assets/audio/cowBell.wav');
     }
 
     create() {

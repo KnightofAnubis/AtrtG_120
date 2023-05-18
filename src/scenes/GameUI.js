@@ -5,7 +5,6 @@ class GameUI extends Phaser.Scene {
         super("gameUIScene");
     }
     preload(){
-        this.load.image('bikeRepair', './assets/bikeRepair.png',);
     }
     create(){
         let scoreConfig = defaultTextConfig;
@@ -14,15 +13,13 @@ class GameUI extends Phaser.Scene {
             top: -1,
             bottom: 0
         }
-        this.add.rectangle(0, 0, game.config.width, UIBorderY, 0x000000).setOrigin(0,0);
-        this.add.rectangle(0, game.config.height - UIBorderY, game.config.width, UIBorderY, 0x000000).setOrigin(0,0);
-        this.add.rectangle(0, 0, UIBorderX, game.config.height, 0x000000).setOrigin(0,0);
-        this.add.rectangle(game.config.width - UIBorderX, 0, UIBorderX, game.config.height, 0x000000).setOrigin(0,0);
-        this.score = this.add.text(game.config.width  / 2, game.config.height - UIBorderY / 2,'Overtakes: 0', scoreConfig).setOrigin(0.5);
+        this.add.rectangle(UIBorderY, game.config.height - UIBorderY, 64, 24, 0x767676).setOrigin(0,1);
+        this.add.rectangle(UIBorderY + 2, game.config.height - UIBorderY - 2, 60, 20, 0x2b2b2b).setOrigin(0,1);
+        
         
         this.repairs = this.add.group({});
         const repairArray = this.repairs.getChildren();
-        sceneEvents.on('playerUseRepair', health=> {
+        sceneEvents.on('lostLife', health=> {
             const gear = Phaser.Utils.Array.RemoveAt(repairArray, health);
             if(gear){
                 gear.alpha = 0;
@@ -30,25 +27,24 @@ class GameUI extends Phaser.Scene {
             }            
         });
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-            sceneEvents.off('playerUseRepair');
+            sceneEvents.off('lostLife');
         });
         
         this.repairs.createMultiple({
-            key: 'bikeRepair',
+            key: 'heart',
             setXY: {
-                x: UIBorderY / 2,
-                y: UIBorderY / 2, 
-                stepX: 32
+                x: UIBorderY + 12,
+                y: game.config.height - UIBorderY - 12, 
+                stepX: 20
             },
             setOrigin: (0,0),
             setScale: {
-                x: game.config.width/720,
-                y: game.config.height/1280
+                x: 1,
+                y: 1
             },
             quantity: 3
         });
     }
     update(){
-        this.score.text = `Overtakes: ${raceScore}`;
     }
 }

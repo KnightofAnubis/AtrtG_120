@@ -2,39 +2,28 @@ class Menu extends Phaser.Scene {
     constructor() {
         super("menuScene");
     }
-
-    preload() {
-        this.load.audio('sfx_select', './assets/blip_select12.wav');
-        this.load.image('menuBackground', './assets/ground.png');
+    preload(){}
+    create(){
+        this.add.text(game.config.width/2, game.config.height/6, 'The Tour of the Infinite', defaultTextConfig).setOrigin(.5,.5);
+        defaultTextConfig.fontSize = '24px';
+        this.add.text(game.config.width/2, game.config.height/6 + 36, `High Score: ${highScore}`, defaultTextConfig).setOrigin(.5,.5);
+        defaultTextConfig.color = '#990000';
+        this.add.text(game.config.width/2, game.config.height/2, 'use (W)(A)(S)(D) to move your bike\novertake the other bikes\navoid the spikeTraps\n\npress (W) to start', defaultTextConfig).setOrigin(.5,.5);
+        defaultTextConfig.color = '#71b09f';
+        this.add.text(game.config.width/2, (game.config.height* 5) / 6, 'press (S) to see credits', defaultTextConfig).setOrigin(.5,.5);
+        
+        keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
     }
-
-    create() {
-        let menuConfig = {
-            fontFamily: 'Arial',
-            fontSize: '36px',
-            backgroundColor: '#F3B141',
-            color: '#FFFFFF',
-            align: 'center',
-            padding: {
-                top: 5,
-                bottom: 5,
-            },
-            fixedWidth: 0
+    update() {
+        const pointer = this.input.activePointer;
+        if(keyW.isDown){
+            this.sound.play('selectSFX');
+            this.scene.start('playScene');
         }
-
-        this.add.text(game.config.width / 2, game.config.height / 2 - borderUISize - borderPadding, 'SPACE RACE', menuConfig).setOrigin(0.5);
-
-        menuConfig.fontSize = '24px';
-        this.add.text(game.config.width / 2, game.config.height / 2, 'Use <- -> arrows to move and SPACEBAR to jump', menuConfig).setOrigin(0.5);
-
-        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-
-        this.input.keyboard.on('keydown', (event) => {
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                this.sound.play('sfx_select');
-                this.scene.start('playScene');
-            }
-        });
+        if(keyS.isDown){
+            this.sound.play('selectSFX');
+            this.scene.start('creditsScene');
+        }
     }
 }

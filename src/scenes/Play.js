@@ -7,7 +7,6 @@ class Play extends Phaser.Scene {
         this.load.image('asteroid', 'assets/asteroid.png');
         this.load.image('ground', 'assets/background.png');
 
-        this.load.audio('music' , 'assets/Space1.wav');
 
         for (let i = 1; i <= 7; i++) {
             this.load.image(`player${i}`, `assets/playersheet/player${i}.png`);

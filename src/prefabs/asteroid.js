@@ -3,7 +3,8 @@ class asteroid extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture, frame)
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
-        this.body.onCollide = true;
+        this.body.onOverlap = true;
+        this.body.isCircle = true;
         this.scene = scene;
         this.body.drag = 0;
         this.scale = this.y/128 - 1;
@@ -17,9 +18,15 @@ class asteroid extends Phaser.Physics.Arcade.Sprite {
     update() {
         this.scale = ((this.y - 128) / 128) * 0.7;
         if(this.y > game.config.height + this.body.height / 2){
-            this.scene.currentAsteroid --;
-            this.destroy();
+            this.kill()
         }
 
     }
+    kill(){
+        this.scene.currentAsteroid --;
+        this.destroy();
+    }
+
+    
+
 }

@@ -11,6 +11,7 @@ class Play extends Phaser.Scene {
         this.physics.world.setBounds(0,0,game.config.width,game.config.height);
         this.gameOver = false;
         this.currentAsteroid = 0;
+        this.totalAsteroid = 5;
 
         //audio set up based on paddleParkour
         this.bgdMusic = this.sound.add('bgdMusic', { 
@@ -36,8 +37,7 @@ class Play extends Phaser.Scene {
                 repeat: -1
         });
         this.sunset.anims.play('shiftingGrid');
-        
-        
+
         //key binds
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
@@ -46,31 +46,32 @@ class Play extends Phaser.Scene {
         
         this.P1 = new jetPack(this, game.config.width / 2, game.config.height - playerBuffer, 'jetpack', 'jetpack_00.png').setDepth(1);
         
-        this.astroids = this.add.group({
+        this.asteroids = this.add.group({
             classType: asteroid,
             runChildUpdate: true,
             maxsize: -1
         });
-        this.totalAsteroid = 5;
 
-        this.physics.world.on('collide',  (gameObject1, gameObject2, body1, body2) =>{
-            if(gameObject1.texture.key == 'playerBike'){
-                this.PlayerAstroidCollion(gameObject1);
-            }else {
-                if(gameObject1.texture.key == 'AIBike'){
-                    gameObject1.breakDown = true;
-                }
+        this.physics.world.on('overlap', (gameObject1, gameObject2, body1, body2) =>{
+            if(gameObject1.texture.key == 'jetpack'){
+                this.P1.disableBody(true,false);
+                this.P1.PlayerAsteroidOverlap(gameObject1); 
             }
+            if(gameObject2.texture.key == 'asteroid'){
+                gameObject2.kill();
+            }
+            
         });
             
         this.scene.run('gameUIScene', {active: true});
     }
 
     update(){
+        console.log(this.P1.health,this.P1.body.onOverlap);
         if(this.currentAsteroid < this.totalAsteroid){    
             this.currentAsteroid ++;
             this.time.delayedCall(Phaser.Math.Between(1000, 10000), () => {
-                this.astroids.add(new asteroid(this,
+                this.asteroids.add(new asteroid(this,
                     (game.config.width / 2) + Phaser.Math.Between(-horizonLine / 2 , horizonLine / 2),
                     164, 
                     'asteroid',
@@ -80,48 +81,21 @@ class Play extends Phaser.Scene {
 
         if(this.P1.health == 0){
             this.gameOver = true;
+            this.asteroids.clear(true, true);
             this.tweens.add({
-                targets: this.bikeSFX,
+                targets: this.bgdMusic,
                 volume: 0,
                 ease: 'Linear',
-                duration: 2000
+                duration: 1000
             });
-            this.time.delayedCall(4000, () => { this.scene.stop('gameUIScene');this.scene.start('gameOverScene'); });
+            this.time.delayedCall(1000, () => { this.scene.stop('gameUIScene');this.scene.start('gameOverScene'); });
         }
         
         this.P1.update();
         if(!this.gameOver){
             this.P1.update();
-            this.physics.world.collide(this.P1, this.astroids);
+            this.physics.world.overlap(this.P1, this.asteroids);
         }
-    }
-    PlayerAstroidCollion(gameObject1, gameObject2){
-
-        gameObject1.body.onOverlap = false;
-        gameObject1.health --;
-        gameObject1.breakDown = true;
-        gameObject1.offRoad = true;
-        this.cameras.main.shake(100,2);
-        sceneEvents.emit('lostLife', gameObject1.health);
-        this.blink = this.tweens.chain({
-            targets: gameObject1,
-            tweens: [
-                {
-                    alpha:0,
-                    duration: 40
-                },
-                {
-                    alpha: 1,
-                    duration: 40
-                },
-            ],
-            loop: 15,
-            onComplete: () => {
-                gameObject1.breakDown = false;
-                gameObject1.body.onOverlap = true;
-                gameObject1.body.velocity.x = 0;
-            }
-        });
     } 
 }
 /*

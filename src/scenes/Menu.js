@@ -5,7 +5,7 @@ class Menu extends Phaser.Scene {
     preload(){}
     create(){
         defaultTextConfig.fontSize = '36px';
-        this.add.text(game.config.width/2, game.config.height/6, 'Wormhole shit', defaultTextConfig).setOrigin(.5,.5);
+        this.add.text(game.config.width/2, game.config.height/6, 'Space Race', defaultTextConfig).setOrigin(.5,.5);
         defaultTextConfig.fontSize = '24px';
         //this.add.text(game.config.width/2, game.config.height/6 + 36, `High Score: ${highScore}`, defaultTextConfig).setOrigin(.5,.5);
         defaultTextConfig.color = '#990000';

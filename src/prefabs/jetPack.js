@@ -6,7 +6,6 @@ class jetPack extends Phaser.GameObjects.Sprite {
         this.scene.physics.add.existing(this);
         this.body.onCollide = true;
         this.body.setCollideWorldBounds(true);
-        this.body.setSize(this.width / 4 , this.height);   
         this.body.onOverlap = true;
         this.breakDown = false;
         this.accel = 400;

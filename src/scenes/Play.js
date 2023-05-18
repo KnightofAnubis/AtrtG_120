@@ -10,6 +10,7 @@ class Play extends Phaser.Scene {
         this.sunset = this.add.tileSprite(0, 0,  640, 360, 'sunset').setOrigin(0,0); 
         this.physics.world.setBounds(0,0,game.config.width,game.config.height);
         this.gameOver = false;
+        this.currentAstroid = 0;
 
         
         
@@ -22,37 +23,39 @@ class Play extends Phaser.Scene {
         
         this.P1 = new jetPack(this, game.config.width / 2, game.config.height - playerBuffer, 'jetPackGuy').setDepth(1);
         
-        this.warning = this.add.sprite(game.config.width / 2 - roadWidth / 2, UIBorderY, 'warning').setOrigin(0.5,0);
-        this.warning.alpha = 0;
-        
-        this.physics.world.on('overlap',  (gameObject1, gameObject2, body1, body2) =>{
+        this.astroids = this.add.group({
+            classType: asteroid,
+            runChildUpdate: true,
+            maxsize: -1
+        });
+        this.totalAstroid = 5;
+
+        this.physics.world.on('collide',  (gameObject1, gameObject2, body1, body2) =>{
             if(gameObject1.texture.key == 'playerBike'){
-                this.PlayerOverlap(gameObject1);
+                this.PlayerAstroidCollion(gameObject1);
             }else {
                 if(gameObject1.texture.key == 'AIBike'){
                     gameObject1.breakDown = true;
                 }
             }
-            if(gameObject2.type == gameObject1.type){
-                this.tirePop.play();
-            }
         });
             
         this.scene.run('gameUIScene', {active: true});
     }
+
     update(){
-        if(addAI){     
-            this.AIBikers.add(new AI(this,
-                game.config.width / 2,
-                UIBorderY, 
-                'AIBike',
-                this.AIFrames[Math.floor(Math.random()*6)]
+
+        if(this.currentAstroid < this.totalAstroid){     
+            this.astroids.add(new asteroid(this,
+                (game.config.width / 2) + Phaser.Math.Between(-horizonLine / 2 , horizonLine / 2),
+                164, 
+                'asteroid',
             ));
-            addAI = false;  
-        } 
+            this.currentAstroid ++;  
+        }
+
         if(this.P1.health == 0){
             this.gameOver = true;
-            //this.AIBikers.runChildUpdate = false;
             this.tweens.add({
                 targets: this.bikeSFX,
                 volume: 0,
@@ -62,20 +65,19 @@ class Play extends Phaser.Scene {
             this.time.delayedCall(4000, () => { this.scene.stop('gameUIScene');this.scene.start('gameOverScene'); });
         }
         
-        //const pointer = this.input.activePointer;
-        //pX = pointer.worldX;
         this.P1.update();
         if(!this.gameOver){
             this.P1.update();
+            this.physics.world.collide(this.P1, this.astroids);
         }
     }
-    PlayerOverlap(gameObject1, gameObject2){
+    PlayerAstroidCollion(gameObject1, gameObject2){
 
         gameObject1.body.onOverlap = false;
         gameObject1.health --;
         gameObject1.breakDown = true;
         gameObject1.offRoad = true;
-        this.cameras.main.shake(10,2);
+        this.cameras.main.shake(100,2);
         sceneEvents.emit('lostLife', gameObject1.health);
         this.blink = this.tweens.chain({
             targets: gameObject1,
@@ -108,6 +110,12 @@ audio set up based on paddleParkour
         });
         this.bikeSFX.play();
 
+this.tweens.add({
+    targets: this.bikeSFX,
+    volume: 0,
+    ease: 'Linear',
+    duration: 2000
+});
 
 this.anims.create({
             key: 'warningFlash',
@@ -148,6 +156,17 @@ this.AIBikers.createMultiple({
                 x: Math.floor(Math.random()*360-(UIBorderX + grassWidth))+UIBorderX + grassWidth,
                 y:UIBorderY
             }
+
+if(addAI){     
+            this.AIBikers.add(new AI(this,
+                game.config.width / 2,
+                UIBorderY, 
+                'AIBike',
+                this.AIFrames[Math.floor(Math.random()*6)]
+            ));
+            addAI = false;  
+        } 
+
 PlayerHitSpikes(gameObject1, gameObject2){
         gameObject1.health --;
         gameObject2.disableBody(true,false);

@@ -16,6 +16,7 @@ class Load extends Phaser.Scene {
         this.load.image('heart', './assets/heart.png',);
         this.load.image('sunset', './assets/sunset.png');
         this.load.image('jetPackGuy', './assets/spaceman.png');
+        this.load.image('asteroid', './assets/asteroid.png');
         this.load.atlas('warning', './assets/warning.png', './assets/warning.json');
     }
 

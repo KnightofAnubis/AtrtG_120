@@ -8,12 +8,11 @@ class jetPack extends Phaser.GameObjects.Sprite {
         this.body.setSize(this.width / 4 , this.height);   
         this.body.onOverlap = true;
         this.breakDown = false;
-        this.accel = 200;
+        this.accel = 400;
         this.drag = 400;
         this.health = 3;
         this.scale = game.config.width / 720;
         this.health = 3;
-        this.currentPlayerSpeed = playerSpeed;
     }
     create() {}
     
@@ -21,17 +20,15 @@ class jetPack extends Phaser.GameObjects.Sprite {
         if(this.breakDown){
             this.angle = 0;
             this.body.setAccelerationX(0);
-                if(playerSpeed > 0){
-                    playerSpeed -= Math.floor(playerSpeed / 40);
-                if(this.x <= UIBorderX + grassWidth + this.body.width){
-                    this.body.velocity.x += 10;
-                }else {
-                    if(this.x >= game.config.width - ( UIBorderX + grassWidth + this.body.width)){
+            if(this.x <= UIBorderX + grassWidth + this.body.width){
+                this.body.velocity.x += 10;
+            }else {
+                if(this.x >= game.config.width - ( UIBorderX + grassWidth + this.body.width)){
                     this.body.velocity.x -= 10;
-                    }
                 }
-                this.body.velocity.x = Math.floor(this.body.velocity.x / 2);   
             }
+            this.body.velocity.x = Math.floor(this.body.velocity.x / 2);   
+
         }else{
             this.angle = this.body.velocity.x/7;
             if(keyA.isDown && this.x >= this.width){

@@ -7,11 +7,35 @@ class Play extends Phaser.Scene {
         
 
         //tilesprite
-        this.sunset = this.add.tileSprite(0, 0,  640, 360, 'sunset').setOrigin(0,0); 
+        this.sunset = this.add.sprite (0, 0,'sunset').setOrigin(0,0); 
         this.physics.world.setBounds(0,0,game.config.width,game.config.height);
         this.gameOver = false;
-        this.currentAstroid = 0;
+        this.currentAsteroid = 0;
 
+        //audio set up based on paddleParkour
+        this.bgdMusic = this.sound.add('bgdMusic', { 
+            mute: false,
+            volume: 5,
+            rate: 1,
+            loop: true 
+        });
+        this.bgdMusic.play();
+
+
+        this.anims.create({
+            key: 'shiftingGrid',
+            defaultTextureKey: 'sunset',
+            frames:  this.anims.generateFrameNames('sunset', {
+                prefix: 'sunset_',
+                suffix: '.ase',
+                start: 0,
+                end: 16,
+                zeroPad: 2,
+        }),
+            duration: 700,
+                repeat: -1
+        });
+        this.sunset.anims.play('shiftingGrid');
         
         
         //key binds
@@ -20,15 +44,14 @@ class Play extends Phaser.Scene {
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         
         
-        
-        this.P1 = new jetPack(this, game.config.width / 2, game.config.height - playerBuffer, 'jetPackGuy').setDepth(1);
+        this.P1 = new jetPack(this, game.config.width / 2, game.config.height - playerBuffer, 'jetpack', 'jetpack_00.png').setDepth(1);
         
         this.astroids = this.add.group({
             classType: asteroid,
             runChildUpdate: true,
             maxsize: -1
         });
-        this.totalAstroid = 5;
+        this.totalAsteroid = 5;
 
         this.physics.world.on('collide',  (gameObject1, gameObject2, body1, body2) =>{
             if(gameObject1.texture.key == 'playerBike'){
@@ -44,14 +67,15 @@ class Play extends Phaser.Scene {
     }
 
     update(){
-
-        if(this.currentAstroid < this.totalAstroid){     
-            this.astroids.add(new asteroid(this,
-                (game.config.width / 2) + Phaser.Math.Between(-horizonLine / 2 , horizonLine / 2),
-                164, 
-                'asteroid',
-            ));
-            this.currentAstroid ++;  
+        if(this.currentAsteroid < this.totalAsteroid){    
+            this.currentAsteroid ++;
+            this.time.delayedCall(Phaser.Math.Between(1000, 10000), () => {
+                this.astroids.add(new asteroid(this,
+                    (game.config.width / 2) + Phaser.Math.Between(-horizonLine / 2 , horizonLine / 2),
+                    164, 
+                    'asteroid',
+                ));
+            });
         }
 
         if(this.P1.health == 0){

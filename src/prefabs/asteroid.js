@@ -15,7 +15,11 @@ class asteroid extends Phaser.Physics.Arcade.Sprite {
         this.body.velocity.x = (this.targetX - this.x) / this.constVelocity;
     }
     update() {
-        this.scale = (this.y - 128) / 128;
+        this.scale = ((this.y - 128) / 128) * 0.7;
+        if(this.y > game.config.height + this.body.height / 2){
+            this.scene.currentAsteroid --;
+            this.destroy();
+        }
 
     }
 }

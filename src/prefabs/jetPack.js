@@ -1,6 +1,7 @@
 class jetPack extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, texture, frame ) {
-        super(scene, x, y, texture, frame)
+        super(scene, x, y, texture, frame);
+        this.scene = scene
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
         this.body.onCollide = true;
@@ -13,6 +14,20 @@ class jetPack extends Phaser.GameObjects.Sprite {
         this.health = 3;
         this.scale = game.config.width / 720;
         this.health = 3;
+        this.anims.create({
+            key: 'flyingLoop',
+            defaultTextureKey: 'jetPack',
+            frames:  this.anims.generateFrameNames('jetpack', {
+                prefix: 'jetpack_',
+                suffix: '.png',
+                start: 0,
+                end:6,
+                zeroPad: 2,
+        }),
+            duration: 700,
+                repeat: -1
+        });
+        this.anims.play('flyingLoop');
     }
     create() {}
     

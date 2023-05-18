@@ -13,11 +13,13 @@ class Load extends Phaser.Scene {
         this.load.on('complete', () => {
             loadingBar.destroy();
         });
-        this.load.image('heart', './assets/heart.png',);
-        this.load.image('sunset', './assets/sunset.png');
-        this.load.image('jetPackGuy', './assets/spaceman.png');
-        this.load.image('asteroid', './assets/asteroid.png');
-        this.load.atlas('warning', './assets/warning.png', './assets/warning.json');
+        this.load.path = "./assets/"
+        this.load.image('heart', 'heart.png',);
+        this.load.atlas('sunset', 'sunset.png', 'sunset.json');
+        this.load.atlas('jetpack', 'jetpack-sheet.png', 'jetpack.json');
+        this.load.image('asteroid', 'asteroid.png');
+        this.load.atlas('warning', 'warning.png', 'warning.json');
+        this.load.audio('bgdMusic', 'Space1.wav')
     }
 
     create() {

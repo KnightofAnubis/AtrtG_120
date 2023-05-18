@@ -6,36 +6,34 @@ class AsteroidGroup extends Phaser.Physics.Arcade.Group {
     }
 
     spawnAsteroid(scene) {
-        const x = scene.game.config.width + 100; // Spawn Asteroid off the screen
-        const y = Phaser.Math.Between(borderUISize + borderPadding,
-             game.config.height - borderUISize - borderPadding); 
-             
+        const x = Phaser.Math.Between(scene.game.config.width / 2 - 50, scene.game.config.width / 2 + 50); // Add randomness to the x position
+        const y = scene.game.config.height / 2;
+    
         const asteroidHeight = scene.textures.get('asteroid').getSourceImage().height;
-        
-
-        const asteroid = new Asteroid(scene, x, y, 'asteroid'); // Replace 'Asteroid' with the desired texture name
+        const groundY = game.config.height - borderUISize - borderPadding;
+    
+        const asteroid = new Asteroid(scene, x, y, 'asteroid', 0, groundY);
         this.add(asteroid);
-
+    
         // Create a timed event to spawn the next Asteroid
-        const spawnDelay = Phaser.Math.Between(1000, 5000); // Adjust the values to change the frequency of Asteroids
+        const spawnDelay = Phaser.Math.Between(1000, 5000);
         scene.time.delayedCall(spawnDelay, () => {
             this.spawnAsteroid(scene);
         });
     }
+    
 
-    update() { // Add update method to update all Asteroids in the group
+    update() {
         this.getChildren().forEach(asteroid => {
-            asteroid.x -= 5;
             asteroid.update();
     
-            //Asteroid.setVelocityX(-50); // Set the Asteroid's x velocity to move it from right to left more slowly
-
-    
-            if (asteroid.x + asteroid.width < 0) {
+            if (asteroid.y - asteroid.height > this.scene.game.config.height) {
+                console.log("destroyed");
                 asteroid.destroy();
+                this.spawnAsteroid(this.scene);
             }
+
         });
     }
-    
     
 }

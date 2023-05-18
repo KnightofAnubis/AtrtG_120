@@ -5,7 +5,7 @@ class Menu extends Phaser.Scene {
 
     preload() {
         this.load.audio('sfx_select', './assets/blip_select12.wav');
-        this.load.image('menuBackground', './assets/ground.png');
+        
     }
 
     create() {
@@ -30,11 +30,27 @@ class Menu extends Phaser.Scene {
         keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
         keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
 
-        this.input.keyboard.on('keydown', (event) => {
-            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-                this.sound.play('sfx_select');
-                this.scene.start('playScene');
-            }
-        });
+        
     }
+    update() {
+        if (Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+          // easy mode
+          game.settings = {
+            //spaceshipSpeed: 3,
+            gameTimer: 60 // Change this value to set the game duration (e.g., 120000 for 2 minutes)
+          }
+          
+          this.sound.play('sfx_select');
+          this.scene.start('playScene');    
+        }
+        if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
+          // hard mode
+          game.settings = {
+            //spaceshipSpeed: 4,
+            gameTimer: 45000    
+          }
+          this.sound.play('sfx_select');
+          this.scene.start('playScene');    
+        }
+      }
 }

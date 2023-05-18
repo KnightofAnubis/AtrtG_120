@@ -32,7 +32,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.isUpKeyJustDown = false;
       this.jumps = 0;
 
-    //   this.sfxJump = scene.sound.add('sfx_jump'); // add jump sfx
+       //this.sfxJump = scene.sound.add('sfx_jump'); // add jump sfx
 
       this.isJumpingDelayed = false;
 
@@ -74,7 +74,7 @@ class Player extends Phaser.GameObjects.Sprite {
       this.isUpKeyJustDown = false;
       this.isJumping = true;
       this.body.setVelocityY(-this.jumpHeight);
-      this.sfxJump.play();
+      //this.sfxJump.play();
       this.jumps++;
   
       this.delay = this.jumpDelay; // Set the delay before the next jump

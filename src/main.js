@@ -1,23 +1,13 @@
 /*
 ARTG 120 final project
 
-
-
-
-
-
 */
-
-
-
-
-
 
 
 let config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 400,
+    width: 1280,
+    height: 720,    
     scene: [ Menu, Play ],
 
     physics: {

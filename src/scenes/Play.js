@@ -1,196 +1,64 @@
 class Play extends Phaser.Scene {
     constructor() {
-        super("playScene");        
-    }
-    preload() {}
-    create(){
-        
-
-        //tilesprite
-        this.sunset = this.add.tileSprite(0, 0,  640, 360, 'sunset').setOrigin(0,0); 
-        this.physics.world.setBounds(0,0,game.config.width,game.config.height);
-        this.gameOver = false;
-        this.currentAstroid = 0;
-
-        
-        
-        //key binds
-        keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-        keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-        keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        
-        
-        
-        this.P1 = new jetPack(this, game.config.width / 2, game.config.height - playerBuffer, 'jetPackGuy').setDepth(1);
-        
-        this.astroids = this.add.group({
-            classType: asteroid,
-            runChildUpdate: true,
-            maxsize: -1
-        });
-        this.totalAstroid = 5;
-
-        this.physics.world.on('collide',  (gameObject1, gameObject2, body1, body2) =>{
-            if(gameObject1.texture.key == 'playerBike'){
-                this.PlayerAstroidCollion(gameObject1);
-            }else {
-                if(gameObject1.texture.key == 'AIBike'){
-                    gameObject1.breakDown = true;
-                }
-            }
-        });
-            
-        this.scene.run('gameUIScene', {active: true});
+        super("playScene");
     }
 
-    update(){
+    preload() {
+        this.load.image('asteroid', 'assets/asteroid.png');
+        this.load.image('ground', 'assets/background.png');
 
-        if(this.currentAstroid < this.totalAstroid){     
-            this.astroids.add(new asteroid(this,
-                (game.config.width / 2) + Phaser.Math.Between(-horizonLine / 2 , horizonLine / 2),
-                164, 
-                'asteroid',
-            ));
-            this.currentAstroid ++;  
-        }
+        this.load.audio('music' , 'assets/Space1.wav');
 
-        if(this.P1.health == 0){
-            this.gameOver = true;
-            this.tweens.add({
-                targets: this.bikeSFX,
-                volume: 0,
-                ease: 'Linear',
-                duration: 2000
-            });
-            this.time.delayedCall(4000, () => { this.scene.stop('gameUIScene');this.scene.start('gameOverScene'); });
+        for (let i = 1; i <= 7; i++) {
+            this.load.image(`player${i}`, `assets/playersheet/player${i}.png`);
         }
-        
-        this.P1.update();
-        if(!this.gameOver){
-            this.P1.update();
-            this.physics.world.collide(this.P1, this.astroids);
-        }
+    
     }
-    PlayerAstroidCollion(gameObject1, gameObject2){
-
-        gameObject1.body.onOverlap = false;
-        gameObject1.health --;
-        gameObject1.breakDown = true;
-        gameObject1.offRoad = true;
-        this.cameras.main.shake(100,2);
-        sceneEvents.emit('lostLife', gameObject1.health);
-        this.blink = this.tweens.chain({
-            targets: gameObject1,
-            tweens: [
-                {
-                    alpha:0,
-                    duration: 40
-                },
-                {
-                    alpha: 1,
-                    duration: 40
-                },
+    
+    create() {
+        const groundY = game.config.height - borderUISize - borderPadding;
+        this.ground = this.add.tileSprite(0, groundY+40, game.config.width, game.config.height, 'ground').setOrigin(0, 1);
+    
+        // Remove this line, because we will create the player below with the animation
+        // this.player = new Player(this, game.config.width / 2, groundY + 30, 'player', groundY).setOrigin(0.5, 1);
+    
+        this.asteroids = new AsteroidGroup(this, groundY); // Create an AsteroidGroup instead of a single Asteroid
+    
+    
+        keyLEFT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+        keyRIGHT = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+    
+        this.anims.create({
+            key: 'playerRun',
+            frames: [
+                { key: 'player1' },
+                { key: 'player2' },
+                { key: 'player3' },
+                { key: 'player4' },
+                { key: 'player5' },
+                { key: 'player6' },
+                { key: 'player7' },
             ],
-            loop: 15,
-            onComplete: () => {
-                gameObject1.breakDown = false;
-                gameObject1.body.onOverlap = true;
-                gameObject1.body.velocity.x = 0;
-            }
+            frameRate: 10, // Set the frame rate for the animation
+            repeat: -1 // Loop the animation
         });
-    } 
+        this.player = new Player(this, game.config.width / 2, groundY + 30, 'player1', groundY).setOrigin(0.5, 1);
+        this.player.play('playerRun');
+        
+        this.physics.add.collider(this.player, this.asteroids, this.hitObstacle, null, this);
+        
+    }
+    
+
+    update() {
+        this.player.update();
+        this.asteroids.update(); // Update the AsteroidGroup
+        
+    }
+    
+    hitObstacle(player, obstacle) {
+        if (obstacle instanceof Asteroid) {
+            obstacle.reset();
+        }
+    }
 }
-/*
-audio set up based on paddleParkour
-        this.bikeSFX = this.sound.add('bikePetal', { 
-            mute: false,
-            volume: 1,
-            rate: 1,
-            loop: true 
-        });
-        this.bikeSFX.play();
-
-this.tweens.add({
-    targets: this.bikeSFX,
-    volume: 0,
-    ease: 'Linear',
-    duration: 2000
-});
-
-this.anims.create({
-            key: 'warningFlash',
-            defaultTextureKey: 'warning',
-            frames:  this.anims.generateFrameNames('warning', {
-                prefix: 'warning',
-                suffix: '.png',
-                start: 0,
-                end: 2,
-                zeroPad: 0,
-            }),
-                loop: 4,
-                duration: 1000,
-        });
-
-
-this.AIFrames = ['white', 'lightBlue', 'red', 'green', 'pink', 'blue'];
-        this.AIBikers = this.add.group({
-            classType: AI,
-            runChildUpdate: true,
-            maxsize: -1
-        });
-        this.totalAI = 5;
-        for(let i = 0;  i < 5; i++){
-            this.AIBikers.add(new AI(this,
-            (i/5) * ( 360 - (UIBorderX + grassWidth) * 2 )  + UIBorderX * 2 + grassWidth ,
-            UIBorderY, 
-            'AIBike',
-            this.AIFrames[Math.floor(Math.random()*6)]
-            ));
-            
-        }
-
-
-this.AIBikers.createMultiple({
-            key: 'AIBike',
-            setXY: {
-                x: Math.floor(Math.random()*360-(UIBorderX + grassWidth))+UIBorderX + grassWidth,
-                y:UIBorderY
-            }
-
-if(addAI){     
-            this.AIBikers.add(new AI(this,
-                game.config.width / 2,
-                UIBorderY, 
-                'AIBike',
-                this.AIFrames[Math.floor(Math.random()*6)]
-            ));
-            addAI = false;  
-        } 
-
-PlayerHitSpikes(gameObject1, gameObject2){
-        gameObject1.health --;
-        gameObject2.disableBody(true,false);
-        gameObject1.breakDown = true;
-        gameObject2.inPlayerReset = true;
-        this.cameras.main.shake(10,2);
-        sceneEvents.emit('playerUseRepair', gameObject1.health);
-        this.blink = this.tweens.chain({
-            targets: gameObject1,
-            tweens: [
-                {
-                    alpha:0,
-                    duration: 40
-                },
-                {
-                    alpha: 1,
-                    duration: 40
-                },
-            ],
-            loop: 15,
-            onComplete: () => {
-                this.P1.breakDown = false;
-                gameObject2.inPlayerReset = false;
-            }
-        });
-    }         
- */

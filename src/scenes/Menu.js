@@ -2,10 +2,8 @@ class Menu extends Phaser.Scene {
     constructor() {
         super("menuScene");
     }
-
-    preload() {
-        this.load.audio('sfx_select', './assets/blip_select12.wav');
-        
+    preload(){
+      this.load.audio('sfx_select', './assets/sound/selection.wav'); 
     }
 
     create() {
@@ -41,7 +39,9 @@ class Menu extends Phaser.Scene {
           }
           
           this.sound.play('sfx_select');
-          this.scene.start('playScene');    
+          this.time.delayedCall(1000, () => {
+            this.scene.start('playScene');    
+          });
         }
         if (Phaser.Input.Keyboard.JustDown(keyRIGHT)) {
           // hard mode

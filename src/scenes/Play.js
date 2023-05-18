@@ -8,6 +8,7 @@ class Play extends Phaser.Scene {
         this.load.image('ground', 'assets/background.png');
 
 
+
         for (let i = 1; i <= 7; i++) {
             this.load.image(`player${i}`, `assets/playersheet/player${i}.png`);
         }

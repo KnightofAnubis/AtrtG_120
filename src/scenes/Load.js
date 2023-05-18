@@ -18,7 +18,8 @@ class Load extends Phaser.Scene {
         this.load.image('jetPackGuy', './assets/spaceman.png');
         this.load.image('asteroid', './assets/asteroid.png');
         this.load.atlas('warning', './assets/warning.png', './assets/warning.json');
-        this.load.audio('music' , 'assets/Space1.wav');
+        this.load.audio('music' , 'assets/sound/Space1.wav');
+        this.load.audio('sfx_select', './assets/sound/selection.wav'); 
     }
 
     create() {

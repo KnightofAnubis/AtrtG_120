@@ -5,6 +5,7 @@ let config = {
     fps:{target: 30,},
     scene: [ Load, Menu , Play, GameUI, Credits, GameOver ],
     physics: {default: 'arcade',arcade: {debug: true}},
+    pixelArt: true,
     health: 3   
 };
 

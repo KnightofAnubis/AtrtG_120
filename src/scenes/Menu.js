@@ -15,14 +15,17 @@ class Menu extends Phaser.Scene {
         
         keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+        keyC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C);
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     }
     update() {
         if(keySpace.isDown){
+            this.sound.play('selectSFX');
             this.scene.start('playScene');
         }
-        if(keyD.isDown){
+        if(keyC.isDown){
+            this.sound.play('selectSFX');
             this.scene.start('creditsScene');
         }
     }

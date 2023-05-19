@@ -2,10 +2,7 @@ class GameOver extends Phaser.Scene {
     constructor() {
         super("gameOverScene");
     }
-    preload(){
-        //load audio
-       
-    }
+    preload(){}
     create(){
         if(raceScore > highScore){
             highScore = raceScore;
@@ -20,6 +17,7 @@ class GameOver extends Phaser.Scene {
     }
     update() {
         if(keySpace.isDown){
+            this.sound.play('selectSFX');
             this.scene.start('menuScene');
         }
     }

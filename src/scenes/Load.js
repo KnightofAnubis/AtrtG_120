@@ -17,12 +17,30 @@ class Load extends Phaser.Scene {
         this.load.image('heart', 'heart.png',);
         this.load.atlas('sunset', 'sunset.png', 'sunset.json');
         this.load.atlas('jetpack', 'jetpack-sheet.png', 'jetpack.json');
-        this.load.image('asteroid', 'asteroid.png');
+        this.load.atlas('asteroid', 'asteroid.png', 'asteroid.json');
         this.load.atlas('warning', 'warning.png', 'warning.json');
-        this.load.audio('bgdMusic', 'Space1.wav')
+        this.load.path = "./assets/audio/"
+        this.load.audio('bgdMusic', 'Space1.wav');
+        this.load.audio('selectSFX', 'selection.wav');
+        this.load.audio('portal', 'portal.wav');
+        this.load.audio('warning', 'warning.wav');
+
     }
 
     create() {
+        this.anims.create({
+            key: 'shiftingGrid',
+            defaultTextureKey: 'sunset',
+            frames:  this.anims.generateFrameNames('sunset', {
+                prefix: 'sunset_',
+                suffix: '.ase',
+                start: 0,
+                end: 16,
+                zeroPad: 2,
+            }),
+            duration: 700,
+                repeat: -1
+        });
         this.scene.start('menuScene');
     }
 }

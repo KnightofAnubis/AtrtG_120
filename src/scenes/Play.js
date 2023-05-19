@@ -16,26 +16,14 @@ class Play extends Phaser.Scene {
         //audio set up based on paddleParkour
         this.bgdMusic = this.sound.add('bgdMusic', { 
             mute: false,
-            volume: 5,
+            volume: 1,
             rate: 1,
             loop: true 
         });
         this.bgdMusic.play();
 
 
-        this.anims.create({
-            key: 'shiftingGrid',
-            defaultTextureKey: 'sunset',
-            frames:  this.anims.generateFrameNames('sunset', {
-                prefix: 'sunset_',
-                suffix: '.ase',
-                start: 0,
-                end: 16,
-                zeroPad: 2,
-        }),
-            duration: 700,
-                repeat: -1
-        });
+        
         this.sunset.anims.play('shiftingGrid');
 
         //key binds
@@ -53,9 +41,9 @@ class Play extends Phaser.Scene {
         });
 
         this.physics.world.on('overlap', (gameObject1, gameObject2, body1, body2) =>{
+
             if(gameObject1.texture.key == 'jetpack'){
-                this.P1.disableBody(true,false);
-                this.P1.PlayerAsteroidOverlap(gameObject1); 
+                this.P1.PlayerAsteroidOverlap(); 
             }
             if(gameObject2.texture.key == 'asteroid'){
                 gameObject2.kill();
@@ -67,7 +55,6 @@ class Play extends Phaser.Scene {
     }
 
     update(){
-        console.log(this.P1.health,this.P1.body.onOverlap);
         if(this.currentAsteroid < this.totalAsteroid){    
             this.currentAsteroid ++;
             this.time.delayedCall(Phaser.Math.Between(1000, 10000), () => {
@@ -82,19 +69,21 @@ class Play extends Phaser.Scene {
         if(this.P1.health == 0){
             this.gameOver = true;
             this.asteroids.clear(true, true);
-            this.tweens.add({
-                targets: this.bgdMusic,
-                volume: 0,
-                ease: 'Linear',
-                duration: 1000
+            this.time.delayedCall(1000, () => {
+                this.bgdMusic.stop();
+                this.scene.stop('gameUIScene');
+                this.scene.start('gameOverScene');
+                
             });
-            this.time.delayedCall(1000, () => { this.scene.stop('gameUIScene');this.scene.start('gameOverScene'); });
         }
         
         this.P1.update();
         if(!this.gameOver){
             this.P1.update();
-            this.physics.world.overlap(this.P1, this.asteroids);
+            //onOverlap isn't working so I did it myself fuck you phaser
+            if(this.P1.body.onOverlap){
+                this.physics.world.overlap(this.P1, this.asteroids);
+            }
         }
     } 
 }

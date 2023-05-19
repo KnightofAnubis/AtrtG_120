@@ -9,9 +9,8 @@ class jetPack extends Phaser.Physics.Arcade.Sprite {
         this.accel = 400;
         this.drag = 400;
         this.health = 3;
-        this.scale = game.config.width / 720;
+        this.scale = 1;
         this.health = 3;
-        this.breakDown = false;
 
         this.anims.create({
             key: 'flyingLoop',
@@ -24,14 +23,13 @@ class jetPack extends Phaser.Physics.Arcade.Sprite {
                 zeroPad: 2,
         }),
             duration: 700,
-                repeat: -1
+            repeat: -1
         });
         this.anims.play('flyingLoop');
     }
     create() {}
     
     update() {
-        this.body.setVelocityY(0);
         this.angle = this.body.velocity.x/7;
         if(keyA.isDown && this.x >= this.width){
             this.body.setAccelerationX(-this.accel)
@@ -47,15 +45,15 @@ class jetPack extends Phaser.Physics.Arcade.Sprite {
             }
             }
         }
-    PlayerAsteroidOverlap(gameObject1){
-        gameObject1.body.setVelocityY(0);
-        gameObject1.body.setVelocityX(0);
-        gameObject1.health --;
-        gameObject1.breakDown = true;
+    PlayerAsteroidOverlap(){
+        this.body.onOverlap = false;
+        this.body.setVelocityY(0);
+        this.body.setVelocityX(0);
+        this.health --;
         this.scene.cameras.main.shake(100,2);
-        sceneEvents.emit('lostLife', gameObject1.health);
+        sceneEvents.emit('lostLife', this.health);
         this.blink = this.scene.tweens.chain({
-            targets: gameObject1,
+            targets: this,
             tweens: [
                 {
                     alpha:0,
@@ -68,7 +66,7 @@ class jetPack extends Phaser.Physics.Arcade.Sprite {
             ],
             loop: 15,
             onComplete: () => {
-                gameObject1.enableBody(true, this.x, this.y, true, true)
+                this.body.onOverlap = true;
             }
         });
     }

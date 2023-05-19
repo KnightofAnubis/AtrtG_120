@@ -50,7 +50,7 @@ class jetPack extends Phaser.Physics.Arcade.Sprite {
         this.body.setVelocityY(0);
         this.body.setVelocityX(0);
         this.health --;
-        this.scene.cameras.main.shake(100,2);
+        this.scene.cameras.main.shake(300 , .01);
         sceneEvents.emit('lostLife', this.health);
         this.blink = this.scene.tweens.chain({
             targets: this,

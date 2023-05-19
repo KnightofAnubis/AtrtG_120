@@ -20,10 +20,11 @@ class Load extends Phaser.Scene {
         this.load.atlas('asteroid', 'asteroid.png', 'asteroid.json');
         this.load.atlas('warning', 'warning.png', 'warning.json');
         this.load.path = "./assets/audio/"
-        this.load.audio('bgdMusic', 'Space1.wav');
+        this.load.audio('dimension_1', 'Space1.wav');
         this.load.audio('selectSFX', 'selection.wav');
         this.load.audio('portal', 'portal.wav');
         this.load.audio('warning', 'warning.wav');
+        this.load.audio('dimension_2','Space2.wav')
 
     }
 
